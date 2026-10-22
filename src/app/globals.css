@@ -1,0 +1,375 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* ---------- Theme tokens (dark default, light via [data-theme="light"]) ---------- */
+:root {
+  --fn-bg: #000000;
+  --fn-surface: #0f0f0f;
+  --fn-surface-2: #161616;
+  --fn-surface-strong: #1f1f1f;
+  --fn-border: #ffffff17;
+  --fn-border-strong: #ffffff29;
+  --fn-text: #ffffff;
+  --fn-text-strong: #d8d8d8;
+  --fn-text-muted: #9a9a9a;
+  --fn-text-subtle: #7d7d7d;
+  --fn-inverse: #ffffff;
+  --fn-on-inverse: #000000;
+  --fn-accent: #2f8cff;
+  --fn-accent-soft: #2f8cff26;
+  --fn-positive: #2fd28a;
+  --fn-grid-dot: #ffffff1f;
+  --fn-veil: rgb(10 10 10 / 0.55);
+  --fn-glass: rgb(20 20 22 / 0.55);
+  --fn-glass-shadow: inset 0 1px 0 0 #ffffff14, 0 20px 50px -20px #00000099;
+  --fn-section-shadow: 0 40px 80px -20px rgb(0 0 0 / 0.9), 0 1px 0 0 #ffffff14;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --fn-bg: #ffffff;
+  --fn-surface: #f6f6f6;
+  --fn-surface-2: #f0f0f0;
+  --fn-surface-strong: #e9e9e9;
+  --fn-border: #0000001a;
+  --fn-border-strong: #0000002e;
+  --fn-text: #000000;
+  --fn-text-strong: #363636;
+  --fn-text-muted: #5a5a5a;
+  --fn-text-subtle: #767676;
+  --fn-inverse: #000000;
+  --fn-on-inverse: #ffffff;
+  --fn-accent: #0a6cff;
+  --fn-accent-soft: #0a6cff1f;
+  --fn-positive: #0f9d63;
+  --fn-grid-dot: #0000001f;
+  --fn-veil: rgb(255 255 255 / 0.55);
+  --fn-glass: #ffffffa6;
+  --fn-glass-shadow: inset 0 1px 0 0 #ffffffcc, 0 16px 40px -18px #0000002e;
+  --fn-section-shadow: 0 40px 80px -20px rgb(0 0 0 / 0.18), 0 1px 0 0 #0000001a;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--fn-bg);
+  --color-surface: var(--fn-surface);
+  --color-surface-2: var(--fn-surface-2);
+  --color-surface-3: var(--fn-surface-strong);
+  --color-line: var(--fn-border);
+  --color-line-strong: var(--fn-border-strong);
+  --color-fg: var(--fn-text);
+  --color-fg-strong: var(--fn-text-strong);
+  --color-muted: var(--fn-text-muted);
+  --color-subtle: var(--fn-text-subtle);
+  --color-inverse: var(--fn-inverse);
+  --color-on-inverse: var(--fn-on-inverse);
+  --color-accent: var(--fn-accent);
+  --color-accent-soft: var(--fn-accent-soft);
+  --color-positive: var(--fn-positive);
+  --font-sans: var(--font-display), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  background-color: var(--fn-bg);
+  color: var(--fn-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.5s var(--ease-brand), color 0.5s var(--ease-brand);
+}
+
+body {
+  background-color: var(--fn-bg);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--fn-inverse);
+  color: var(--fn-on-inverse);
+}
+
+/* ---------- Rolling text hover (letters slide up, staggered) ---------- */
+/* Fixed one-line window; each letter is a 2-line column that slides up exactly one line. */
+.roll {
+  display: inline-block;
+  height: 1.3em;
+  line-height: 1.3em;
+  overflow: hidden;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.roll > span {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.roll-char {
+  display: inline-flex;
+  flex-direction: column;
+  transition: transform 0.6s var(--ease-out-expo);
+  transition-delay: calc(var(--i) * 14ms);
+  will-change: transform;
+}
+
+.roll-char > span {
+  display: block;
+  height: 1.3em;
+}
+
+.roll-char > span + span {
+  opacity: 0.9;
+}
+
+@media (hover: hover) {
+  .group:hover .roll-char,
+  .group:focus-visible .roll-char {
+    transform: translateY(-1.3em);
+  }
+}
+
+/* ---------- Marquee ---------- */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.marquee:hover .marquee-track[data-pause="true"] {
+  animation-play-state: paused;
+}
+
+.mask-x {
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* ---------- Background helpers ---------- */
+.dot-grid {
+  background-image: radial-gradient(var(--fn-grid-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 1.8s var(--ease-brand) infinite;
+}
+
+/* ---------- Serif italic accent words inside headings ---------- */
+.accent-serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  font-variation-settings: "opsz" 144, "SOFT" 60, "WONK" 1;
+  padding-right: 0.04em;
+}
+
+/* ---------- Rotating conic "shine" border on hover ---------- */
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spin-angle {
+  to {
+    --angle: 360deg;
+  }
+}
+
+.shine-border {
+  position: relative;
+  isolation: isolate;
+}
+
+.shine-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 0deg,
+    transparent 200deg,
+    var(--fn-accent) 280deg,
+    var(--fn-text) 320deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-brand);
+  animation: spin-angle 3.5s linear infinite;
+  pointer-events: none;
+}
+
+.shine-border:hover::before,
+.shine-border[data-shine="on"]::before {
+  opacity: 1;
+}
+
+/* ---------- Cursor spotlight on cards (vars set in Effects.tsx) ---------- */
+.spotlight {
+  position: relative;
+}
+
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background: radial-gradient(
+    480px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--fn-text) 8%, transparent),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-brand);
+  pointer-events: none;
+}
+
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+/* ---------- Glossy sweep across buttons ---------- */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .btn-shine:hover::after {
+    transform: translateX(120%);
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+}
+
+/* ---------- Aurora blobs ---------- */
+@keyframes aurora-a {
+  0%, 100% { transform: translate(-10%, -6%) scale(1); }
+  50% { transform: translate(12%, 8%) scale(1.15); }
+}
+
+@keyframes aurora-b {
+  0%, 100% { transform: translate(14%, 4%) scale(1.1); }
+  50% { transform: translate(-12%, -8%) scale(0.92); }
+}
+
+@keyframes aurora-c {
+  0%, 100% { transform: translate(0, 10%) scale(0.95); }
+  50% { transform: translate(-6%, -12%) scale(1.2); }
+}
+
+.aurora > span {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+[data-theme="light"] .aurora > span {
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+/* ---------- Breathe (slow float) ---------- */
+@keyframes breathe {
+  0%, 100% { transform: translateY(calc(var(--breathe, 14px) / -2)); }
+  50% { transform: translateY(calc(var(--breathe, 14px) / 2)); }
+}
+
+.breathe {
+  animation: breathe var(--breathe-duration, 6s) cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+/* ---------- Film grain ---------- */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 300;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1s steps(4) infinite;
+}
+
+[data-theme="light"] .grain {
+  opacity: 0.035;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-2%, -1%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---------- Preloader: CSS fallback so the page never stays hidden ---------- */
+@keyframes preloader-fallback {
+  to {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+.preloader {
+  animation: preloader-fallback 0.4s 5s forwards;
+}
+
+[data-intro="done"] .preloader {
+  display: none;
+}
+
+/* ---------- Custom cursor ---------- */
+@media (hover: hover) and (pointer: fine) {
+  [data-cursor] {
+    cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .pulse-ring,
+  .shine-border::before,
+  .aurora > span,
+  .breathe,
+  .grain {
+    animation: none;
+  }
+
+  .roll-char,
+  .btn-shine::after {
+    transition: none;
+  }
+}
