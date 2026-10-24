@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { DM_Sans, Fraunces } from "next/font/google";
 import SmoothScroll from "@/components/SmoothScroll";
 import Effects from "@/components/Effects";
-import Preloader from "@/components/Preloader";
 import "./globals.css";
 
 const display = DM_Sans({
@@ -37,7 +36,6 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
       </head>
       <body className="min-h-screen bg-bg font-sans text-fg antialiased">
-        <Preloader />
         <SmoothScroll />
         <Effects />
         {children}
